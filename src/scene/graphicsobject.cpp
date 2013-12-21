@@ -61,8 +61,10 @@ GraphicsObject::GraphicsObject(Perso *obj) : QObject(), _perso(obj) {
     const int w =  _current_pixmap->pixmap().size().width();
     const int size_ellipse = w/4;
     _status->setRect(w-size_ellipse, w-size_ellipse, size_ellipse, size_ellipse);
-    _status->setBrush(QBrush(Qt::green));
     addToGroup(_status);
+
+    // To set the brush color
+    slot_perso_has_move(_perso->has_moved());
 
     // Box drawn when we select the perso
     _selected_item_box = new QGraphicsRectItem(QRectF(0., 0., boundingRect().width(), boundingRect().height()), this);

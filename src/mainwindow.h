@@ -5,7 +5,7 @@
 #include <QMap>
 
 class Perso;
-class QGraphicsScene;
+class WGGraphicsScene;
 class Player;
 
 namespace Ui {
@@ -34,10 +34,10 @@ private:
     Ui::MainWindow *ui;
 
     // All the scenes game. The view used is ui->main_view
-    QMap<SceneId, QGraphicsScene *> _scenes;
+    QMap<SceneId, WGGraphicsScene *> _scenes;
 
     // Scene where the game takes place. The view used is ui->main_view
-    QGraphicsScene *_current_scene;
+    WGGraphicsScene *_current_scene;
 
     // Load players depending on the fact that it is a new game or a continued game
     // (persos could not be default ones (lvl up, equipment changed, deads...))
@@ -45,11 +45,13 @@ private:
 
     void load_map(const QString &world_name);
 
+    void setCurrentScene(const SceneId id);
+
 protected slots:
     void on_action_new_game_triggered();
     void on_action_load_game_triggered();
 
-    void slot_begin_fight(Perso *yours, Perso *opponent);
+    void slot_begin_fight(Perso *, Perso *);
     void slot_end_fight();
 
     void slot_show_stats();

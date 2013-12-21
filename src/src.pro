@@ -35,7 +35,8 @@ SOURCES += main.cpp\
     core/map_data/dialogtext.cpp \
     scene/graphicdeadeffect.cpp \
     scene/fightscene.cpp \
-    scene/statsscene.cpp
+    scene/statsscene.cpp \
+    scene/wggraphicsscene.cpp
 
 HEADERS  += mainwindow.h \
         constants/ChainConstants.hpp \
@@ -59,7 +60,8 @@ HEADERS  += mainwindow.h \
     core/map_data/dialogtext.hpp \
     scene/graphicdeadeffect.hpp \
     scene/fightscene.hpp \
-    scene/statsscene.hpp
+    scene/statsscene.hpp \
+    scene/wggraphicsscene.hpp
 
 FORMS    += mainwindow.ui
 

@@ -32,7 +32,7 @@ public:
 };
 
 FightScene::FightScene(QObject *parent) :
-    QGraphicsScene(parent)
+    WGGraphicsScene(parent)
 {
     _attacker_perso_icon = new QGraphicsPixmapItem();
     _opponent_perso_icon = new QGraphicsPixmapItem();

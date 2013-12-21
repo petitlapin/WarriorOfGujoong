@@ -9,7 +9,7 @@
 /* -- */
 #include "statsscene.hpp"
 
-StatsScene::StatsScene()
+StatsScene::StatsScene(QObject *parent) : WGGraphicsScene(parent)
 {
     setBackgroundBrush(QBrush(Qt::cyan));
 }

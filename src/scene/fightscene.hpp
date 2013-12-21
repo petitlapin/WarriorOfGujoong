@@ -1,8 +1,9 @@
-#ifndef FIGHTSCENE_HPP
+    #ifndef FIGHTSCENE_HPP
 #define FIGHTSCENE_HPP
 
-#include <QGraphicsScene>
 #include <QTimer>
+
+#include "scene/wggraphicsscene.hpp"
 
 class Perso;
 class QGraphicsPixmapItem;
@@ -17,7 +18,7 @@ enum FightActionEnum
     RUN
 };
 
-class FightScene : public QGraphicsScene
+class FightScene : public WGGraphicsScene
 {
     Q_OBJECT
 
@@ -48,8 +49,6 @@ private:
 public:
     explicit FightScene(QObject *parent = 0);
     
-    void begin_fight(Perso *yours, Perso *opponent);
-
     void do_attack();
 
 protected:
@@ -62,6 +61,7 @@ signals:
     void signal_end_fight();
 
 public slots:
+    void begin_fight(Perso *yours, Perso *opponent);
 };
 
 #endif // FIGHTSCENE_HPP

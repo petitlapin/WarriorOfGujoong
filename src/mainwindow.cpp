@@ -1,5 +1,3 @@
-#include <iostream>
-/* -- */
 #include <QList>
 #include <QLineEdit>
 #include <QInputDialog>
@@ -13,6 +11,7 @@
 #include "core/map_data/modelworld.h"
 /* -- */
 #include "scene/graphictile.hpp"
+#include "scene/wggraphicsscene.hpp"
 #include "scene/graphicsscene.hpp"
 #include "scene/statsscene.hpp"
 #include "scene/fightscene.hpp"
@@ -41,7 +40,7 @@ MainWindow::MainWindow(QWidget *parent) :
 MainWindow::~MainWindow()
 {
     delete ui;
-    foreach(QGraphicsScene *scene, _scenes)
+    foreach(WGGraphicsScene *scene, _scenes)
         delete scene;
 
     _scenes.clear();
@@ -50,7 +49,7 @@ MainWindow::~MainWindow()
 
 
 void MainWindow::resizeEvent(QResizeEvent *event) {
-    std::cout << "resize window " << event->size().width() << " " << event->size().height() << std::endl;
+    qDebug(QString("resize window %1 %2").arg(event->size().width()).arg(event->size().height()).toStdString().c_str());
 }
 
 void MainWindow::on_action_new_game_triggered() {
@@ -75,8 +74,12 @@ void MainWindow::load_map(const QString &world_name) {
 
     _scenes[LEVEL_MAP] = _current_scene;
 
-    connect((GraphicsScene*)_current_scene, SIGNAL(signal_begin_fight(Perso *, Perso *)), this, SLOT(slot_begin_fight(Perso *, Perso *)));
-    connect((GraphicsScene*)_current_scene, SIGNAL(signal_show_stats()), this, SLOT(slot_show_stats()));
+    // Used to change the current scene
+    connect(_current_scene, SIGNAL(signal_begin_fight(Perso *, Perso *)), this, SLOT(slot_begin_fight(Perso *, Perso *)));
+    connect(_current_scene, SIGNAL(signal_show_stats()), this, SLOT(slot_show_stats()));
+
+    connect(_current_scene, SIGNAL(signal_begin_fight(Perso *, Perso *)), _scenes[FIGHT_SCENE], SLOT(begin_fight(Perso *, Perso *)));
+    connect(_current_scene, SIGNAL(signal_show_stats()), _scenes[STATS_SCENE], SLOT(refresh_stats()));
 
     ModelWorld *mw = NULL;
     try {
@@ -152,37 +155,30 @@ void MainWindow::temporary_load_human_player(QList <Player *> &players) {
     players.push_back(p1);
 }
 
-void MainWindow::slot_begin_fight(Perso *yours, Perso *opponent)
+void MainWindow::setCurrentScene(const SceneId id)
 {
-    qDebug("Switch to fight scene!");
-    FightScene *scene = dynamic_cast<FightScene *>(_scenes[FIGHT_SCENE]);
-    _current_scene = scene;
+    _current_scene = _scenes[id];
     ui->main_view->setScene(_current_scene);
+}
 
-    scene->begin_fight(yours, opponent);
+void MainWindow::slot_begin_fight(Perso */*yours*/, Perso */*opponent*/)
+{
+    setCurrentScene(FIGHT_SCENE);
 }
 
 void MainWindow::slot_end_fight()
 {
-    // Get back to level scene
-    _current_scene = _scenes[LEVEL_MAP];
-    ui->main_view->setScene(_current_scene);
+    setCurrentScene(LEVEL_MAP);
 }
 
 void MainWindow::slot_show_stats()
 {
-    // Get back to level scene
-    _current_scene = _scenes[STATS_SCENE];
-    ui->main_view->setScene(_current_scene);
-    StatsScene *stat_scene = dynamic_cast<StatsScene *>(_scenes[STATS_SCENE]);
-    stat_scene->refresh_stats();
+    setCurrentScene(STATS_SCENE);
 }
 
 void MainWindow::slot_hide_stats()
 {
-    // Get back to level scene
-    _current_scene = _scenes[LEVEL_MAP];
-    ui->main_view->setScene(_current_scene);
+    setCurrentScene(LEVEL_MAP);
 }
 
 void MainWindow::slot_player_has_lost(Player *p)
@@ -191,6 +187,7 @@ void MainWindow::slot_player_has_lost(Player *p)
         qDebug("You lost, TODO Display game over!");
     }
     else {
-        qDebug("You won this level, Display town to buy weapons!");
+        // Not true if more than one opponent
+        qDebug("You won this level, Display next level!");
     }
 }

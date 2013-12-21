@@ -36,11 +36,12 @@ GraphicDialog::GraphicDialog(QGraphicsScene *scene, const QList<QSharedPointer<D
     horizontalLayout->addWidget(_icon_perso);
     _text_widget = new QTextEdit;
     _text_widget->setReadOnly(true);
+
     _text_widget->setTextInteractionFlags(Qt::NoTextInteraction);
     _text_widget->setStyleSheet("border: 2px solid gray; border-radius: 10px; padding: 0 8px; \
                                 background: transparent;");
 
-            QFontMetrics metrics(QApplication::font());
+    QFontMetrics metrics(QApplication::font());
     _text_widget->setFixedHeight(4*metrics.height());
     horizontalLayout->addWidget(_text_widget);
 

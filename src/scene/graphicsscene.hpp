@@ -1,11 +1,11 @@
 #ifndef GRAPHICSSCENE_HPP
 #define GRAPHICSSCENE_HPP
 
-#include <QGraphicsScene>
 #include <QPointer>
 #include <QList>
 /* -- */
 #include "scene/graphictile.hpp"
+#include "scene/wggraphicsscene.hpp"
 
 class LevelData;
 class ModelArea;
@@ -22,7 +22,7 @@ enum ActionState {
     ATTACKING
 };
 
-class GraphicsScene : public QGraphicsScene
+class GraphicsScene : public WGGraphicsScene
 {
     Q_OBJECT
 public:

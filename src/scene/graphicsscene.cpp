@@ -34,7 +34,7 @@
 #define TILE_SIZE 48
 
 GraphicsScene::GraphicsScene(QObject *parent) :
-    QGraphicsScene(parent), _current_state(WAITING), _current_map(NULL), _cursor_position(new QGraphicsRectItem()), _selected_item(NULL),
+    WGGraphicsScene(parent), _current_state(WAITING), _current_map(NULL), _cursor_position(new QGraphicsRectItem()), _selected_item(NULL),
     _attack_item(new QGraphicsPixmapItem(QPixmap(Constants::IMAGES_PATH+"weapons/sword_bronze.png").scaled(TILE_SIZE, TILE_SIZE))),
     _action_menu(new ActionMenuWindow()), _dialogs(NULL)
 {
