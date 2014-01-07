@@ -60,7 +60,7 @@ public slots:
     void slot_player_has_lost(Player *p);
 
 signals:
-    void signal_change_current_player(int cur_player);
+    void signal_change_current_player(int cur_player_id);
 };
 
 #endif // LEVELDATA_HPP

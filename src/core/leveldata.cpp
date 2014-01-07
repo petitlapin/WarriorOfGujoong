@@ -62,11 +62,15 @@ void LevelData::set_next_player()
         _current_player = 0;
     }
 
-    emit signal_change_current_player(_current_player);
+    emit signal_change_current_player(_players.at(_current_player)->get_id());
 }
 
 void LevelData::slot_player_has_lost(Player *p)
 {
+    if(_players.indexOf(p) < _current_player) {
+        // If the looser player plays before us, we lose one index in the table (if we were 3rd player, we are now 2nd and the next to play will be 3 (previous 4))
+        _current_player --;
+    }
     _players.removeOne(p);
 }
 

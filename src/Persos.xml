@@ -42,5 +42,6 @@
     <area id="test">
         <perso id="soldier" player="1" lvl="1" x="4" y="6" />
         <perso id="soldier" player="2" lvl="1" x="3" y="6" />
+        <perso id="chun" player="3" lvl="1" x="2" y="6" />
     </area>
 </World>
