@@ -53,3 +53,16 @@ vector<vector<QSharedPointer<TileData> > > &ModelArea::get_tiles_grid()
 {
     return this->tiles_grid;
 }
+
+void ModelArea::set_tiles_walkable_for_action(QList<QPair<int, int> > &non_walkable_points)
+{
+    for (size_t i = 0 ; i < tiles_grid.size() ; ++ i) {
+        for (size_t j = 0 ; j < tiles_grid[i].size() ; ++ j) {
+            (*tiles_grid[i][j]).set_walkable_for_action(true);
+        }
+    }
+
+    for(QList<QPair<int, int> >::iterator it = non_walkable_points.begin() ; it != non_walkable_points.end() ; ++ it) {
+        (*tiles_grid[(*it).first][(*it).second]).set_walkable_for_action(false);
+    }
+}

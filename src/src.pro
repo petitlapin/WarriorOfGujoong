@@ -28,7 +28,6 @@ SOURCES += main.cpp\
         core/leveldata.cpp \
         scene/graphicsobject.cpp \
         scene/graphicsscene.cpp \
-        computemoves.cpp \
         scene/actionmenuwindow.cpp \
         scene/graphictile.cpp \
     scene/graphicdialog.cpp \
@@ -36,7 +35,8 @@ SOURCES += main.cpp\
     scene/graphicdeadeffect.cpp \
     scene/fightscene.cpp \
     scene/statsscene.cpp \
-    scene/wggraphicsscene.cpp
+    scene/wggraphicsscene.cpp \
+    computemoves.cpp
 
 HEADERS  += mainwindow.h \
         constants/ChainConstants.hpp \

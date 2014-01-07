@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include <QSharedPointer>
+#include <QPair>
 
 class Player;
 class Perso;
@@ -34,6 +35,8 @@ public:
 
     const QList <QSharedPointer<DialogText> > &get_dialogs() const;
 
+    void set_tiles_walkable_for_action(QList<QPair<int, int> > &non_walkable_points);
+
 private:
     QList<Player *>  _players;
     QString _map_id;
@@ -52,6 +55,9 @@ private:
 
 public slots:
     void set_next_player();
+
+    // Called when a player has lost
+    void slot_player_has_lost(Player *p);
 
 signals:
     void signal_change_current_player(int cur_player);

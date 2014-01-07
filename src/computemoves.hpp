@@ -51,3 +51,4 @@ public:
 };
 
 #endif // COMPUTEMOVES_HPP
+

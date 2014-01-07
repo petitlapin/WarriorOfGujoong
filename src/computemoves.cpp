@@ -29,7 +29,7 @@ MoveAction *ComputeMoves::create_moves(const QPointF &begin_pos, const QPointF &
     int begin_x = begin_pos.x()/TILE_SIZE;
     int begin_y = begin_pos.y()/TILE_SIZE;
 
-    MoveAction *mv_action =  new MoveAction();
+    MoveAction *mv_action = new MoveAction();
     QList <Move *> *moves = new QList<Move*>();
     mv_action->set_moves(moves);
     // Go horizontally first then vertically
@@ -124,7 +124,7 @@ void ComputeMoves::release_moves(MoveAction *mv_action)
 
 void ComputeMoves::compute_visibility(QSharedPointer<ModelArea> &model, const GraphicsObject *perso, const QVector<GraphicsObject *> &persos)
 {
-    std::vector < std::vector<QSharedPointer<TileData> > > &area = model.data()->get_tiles_grid();
+    std::vector < std::vector<QSharedPointer<TileData> > > &area = model->get_tiles_grid();
     const int map_width = area.size();
     const int map_height = area[0].size();
 
@@ -160,13 +160,13 @@ void ComputeMoves::compute_visibility(QSharedPointer<ModelArea> &model, const Gr
                             _current_moves[i-1][j]->prev = _current_moves[i][j];
                         }
                     }
-                    if(i+1 < _current_moves.size()) { // Watch if can go to  right case
+                    if(i+1 < _current_moves.size()) { // Watch if can go to right case
                         if(area[i+1][j].data()->is_walkable() && _current_moves[i+1][j]->mob-1 > _current_moves[i][j]->mob) {
                             _current_moves[i+1][j]->mob = _current_moves[i][j]->mob - 1; // - case mobilité si on fait des cases avec mobilité différente de 1
                             _current_moves[i+1][j]->prev = _current_moves[i][j];
                         }
                     }
-                    if(j-1 >= 0) { // Watch if can go to  top case
+                    if(j-1 >= 0) { // Watch if can go to top case
                         if(area[i][j-1].data()->is_walkable() && _current_moves[i][j-1]->mob-1 > _current_moves[i][j]->mob) {
                             _current_moves[i][j-1]->mob = _current_moves[i][j]->mob - 1; // - case mobilité si on fait des cases avec mobilité différente de 1
                             _current_moves[i][j-1]->prev = _current_moves[i][j];
@@ -196,8 +196,7 @@ void ComputeMoves::compute_visibility(QSharedPointer<ModelArea> &model, const Gr
     for (int ik = 0 ; ik < map_width ; ik ++) {
         for (int jk = 0 ; jk < map_height ; jk ++) {
             // Set visibility on cases
-            area[ik][jk].data()->set_walkable_for_action(_current_moves[ik][jk]->mob >= 0 && _current_moves[ik][jk]->mob != INFINITY);
+            area[ik][jk]->set_walkable_for_action(_current_moves[ik][jk]->mob >= 0 && _current_moves[ik][jk]->mob != INFINITY);
         }
     }
 }
-

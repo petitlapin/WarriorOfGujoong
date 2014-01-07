@@ -65,6 +65,11 @@ void LevelData::set_next_player()
     emit signal_change_current_player(_current_player);
 }
 
+void LevelData::slot_player_has_lost(Player *p)
+{
+    _players.removeOne(p);
+}
+
 void LevelData::set_model_area(const QSharedPointer<ModelArea> &model)
 {
     _model_area = model;
@@ -92,6 +97,11 @@ bool LevelData::has_ennemi_around(const QPoint &pos)
 const QList<QSharedPointer<DialogText> > &LevelData::get_dialogs() const
 {
     return _dialogs;
+}
+
+void LevelData::set_tiles_walkable_for_action(QList<QPair<int, int> > &non_walkable_points)
+{
+    (*_model_area).set_tiles_walkable_for_action(non_walkable_points);
 }
 
 void LevelData::load_dialogs(const QString &map_area_id)

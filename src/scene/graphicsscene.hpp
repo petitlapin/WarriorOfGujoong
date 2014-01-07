@@ -72,7 +72,7 @@ private:
     void create_map(const QSharedPointer<ModelArea> &area);
 
     // TODO load from files
-    void add_objects(const QList<Perso *> objects);
+    void add_objects(const QList<Perso *> &objects);
 
     void click_action(const QPointF &pos);
 
@@ -101,9 +101,6 @@ signals:
 public slots:
     void propose_end_of_move_action();
     void hide_dialogs();
-
-    // Called when a player has lost
-    void slot_player_has_lost(Player *);
 
     // Used because we store persos in class. Useful to store persos ?
     void slot_perso_is_dead(Perso *);

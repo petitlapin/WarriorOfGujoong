@@ -79,7 +79,7 @@ void GraphicsScene::create_world(LevelData *mapData)
     foreach(Player *player, _current_map->get_players()) {
         add_objects(player->get_persos());
 
-        connect(player, SIGNAL(signal_player_has_lost(Player *)), this, SLOT(slot_player_has_lost(Player *)));
+        connect(player, SIGNAL(signal_player_has_lost(Player *)), mapData, SLOT(slot_player_has_lost(Player *)));
     }
 
     // TODO Set to tile size
@@ -98,7 +98,7 @@ void GraphicsScene::create_world(LevelData *mapData)
     _dialogs->next_text();
 }
 
-void GraphicsScene::add_objects(const QList<Perso *> objects) {
+void GraphicsScene::add_objects(const QList<Perso *> &objects) {
     foreach(Perso *obj, objects) {
         GraphicsObject *graphicObject = new GraphicsObject(obj);
 
@@ -236,9 +236,6 @@ void GraphicsScene::keyPressEvent(QKeyEvent *event)
             break;
         case ATTACKING:
             switch(event->key()) {
-
-            /* TODO Attention si 2 ennemis sont a côté et que le deuxieme n'est pas censé être atteignable, ça
-        va être le cas avec le code qui suit... */
             case Qt::Key_Up:
                 move_attack_sword(_attack_item->pos() + QPointF(0, -TILE_SIZE));
                 break;
@@ -261,7 +258,7 @@ void GraphicsScene::keyPressEvent(QKeyEvent *event)
                 std::cout << "Do action : " << _action_menu->get_action().toStdString() << std::endl;
                 _current_state = WAITING;
                 _attack_item->setVisible(false);
-                // TODO Attack if an ennemi is under the sword
+                // Attack if an ennemi is under the sword
                 Perso *attacker = _selected_item->get_object();
                 Perso *opponent = _current_map->get_perso_at((_attack_item->pos().toPoint()/TILE_SIZE));
 
@@ -303,11 +300,8 @@ void GraphicsScene::click_action(const QPointF &pos) {
         _current_state = MOVING;
 
         // Reset the tiles
-        for (int i = 0 ; i < _tilesData.size() ; ++ i) {
-            for (int j = 0 ; j < _tilesData[i].size() ; ++ j) {
-                _tilesData[i][j].data()->get_tile()->set_walkable_for_action(true);
-            }
-        }
+        QList<QPair<int, int> > non_walkable_points;
+        _current_map->set_tiles_walkable_for_action(non_walkable_points);
     }
     else {
         // Look if there is a perso at the position
@@ -373,7 +367,6 @@ void GraphicsScene::move_action(const QPointF &new_pos) {
 
 void GraphicsScene::move_attack_sword(const QPointF &new_pos) {
     // Get the position in cases
-
     QPoint map_position(new_pos.toPoint() / TILE_SIZE);
     QPointF cursor_pos(map_position * TILE_SIZE);
 
@@ -467,12 +460,6 @@ void GraphicsScene::hide_dialogs()
 {
     _dialogs->deleteLater();
     _dialogs = NULL;
-}
-
-void GraphicsScene::slot_player_has_lost(Player *p)
-{
-    // TODO
-    std::cout << "player " << p << " has lost" << std::endl;
 }
 
 void GraphicsScene::slot_perso_is_dead(Perso *perso)
