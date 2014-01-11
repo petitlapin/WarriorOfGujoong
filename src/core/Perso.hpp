@@ -11,6 +11,20 @@
 #include "WGObject.hpp"
 #include "PState.hpp"
 #include "Item.hpp"
+#include "equipment.hpp"
+
+#define XP_FOR_WINNING_LEVEL 10
+
+class PersoEquipment : public Equipment {
+public:
+    PersoEquipment() : Equipment(), _xp(0) {}
+    void set_xp(const int xp) { _xp = xp; }
+    int get_xp() const { return _xp; }
+
+protected:
+    int _xp;
+};
+
 
 /**
  * \brief Root class for all personnages
@@ -200,10 +214,11 @@ public :
   int
   get_max_XP();
   /**
-   * \brief Set current XP
+   * \brief Add val XP to the perso. If it goes more than the max value, the perso wins a level
+   * and emits the signal signal_perso_win_level().
    */
   void
-  set_XP(int val);
+  add_XP(int val);
   /**
    * \brief Set total XP
    */
@@ -257,7 +272,6 @@ public :
    * Read from xml file the data. Only works for enemies
    */
   void load_caracteristics();
-
 
 protected :
   /**
@@ -334,6 +348,12 @@ protected :
    */
   int _player_id;
 
+  /**
+   * @brief _dead_equipment
+   * Equipment given to the perso who kill you
+   */
+  PersoEquipment _dead_equipment;
+
 public slots:
   /**
    * @brief slot_set_has_moved
@@ -343,6 +363,19 @@ public slots:
    * @brief slot_reset_has_moved
    */
   void slot_reset_has_moved();
+
+  /**
+   * @brief slot_perso_win_level
+   * Updates the perso statistics
+   */
+  void slot_perso_win_level();
+
+  /**
+   * @brief slot_kill_enemy
+   * Called when the perso has killed an enemy.
+   * Updates xp and player gold.
+   */
+  void slot_kill_enemy(Perso *enemy);
 
 private:
   /**
@@ -360,6 +393,19 @@ signals:
    * Emitted when the perso has no more HP
    */
   void signal_perso_is_dead(Perso *perso);
+
+  /**
+   * @brief signal_equipment_won
+   * Emitted when the perso killed another one. Its player will get the equipment (xp, gold, weapons...) of the dead.
+   */
+  void signal_equipment_won(PersoEquipment* dead_perso_equipment);
+
+  /**
+   * @brief signal_perso_win_level
+   * Emitted when the perso has won a level
+   */
+  void signal_perso_win_level(Perso *perso);
+
 };
 
 #endif

@@ -10,6 +10,8 @@
 /* -- */
 #include "core/map_data/modelworld.h"
 /* -- */
+#include "scene/handler/statsinputhandler.hpp"
+/* -- */
 #include "scene/graphictile.hpp"
 #include "scene/wggraphicsscene.hpp"
 #include "scene/graphicsscene.hpp"
@@ -32,7 +34,7 @@ MainWindow::MainWindow(QWidget *parent) :
     _scenes[FIGHT_SCENE] = fight_scene;
     connect(fight_scene, SIGNAL(signal_end_fight()), this, SLOT(slot_end_fight()));
 
-    StatsScene *stat_scene = new StatsScene();
+    StatsScene *stat_scene = new StatsScene(new StatsInputHandler());
     _scenes[STATS_SCENE] = stat_scene;
     connect(stat_scene, SIGNAL(signal_hide_stats()), this, SLOT(slot_hide_stats()));
 }
@@ -122,31 +124,19 @@ void MainWindow::temporary_load_human_player(QList <Player *> &players) {
     QList<Perso *> persos;
     // Player 1
     Perso *obj = new Perso("chun", 0);
+    obj->set_level(1);
+    obj->load_caracteristics();
     obj->set_position(Position(1, 4, 0));
-    obj->set_HP(10);
-    obj->set_max_HP(15);
-    obj->set_MP(12);
-    obj->set_max_MP(14);
-    obj->set_strength(5);
-    obj->set_mobility(6);
     persos.push_back(obj);
     obj = new Perso("kyle", 0);
+    obj->set_level(1);
+    obj->load_caracteristics();
     obj->set_position(Position(2, 4, 0));
-    obj->set_HP(15);
-    obj->set_max_HP(25);
-    obj->set_MP(22);
-    obj->set_max_MP(24);
-    obj->set_mobility(4);
-    obj->set_strength(21);
     persos.push_back(obj);
     obj = new Perso("ryan", 0);
+    obj->set_level(1);
     obj->set_position(Position(3, 4, 0));
-    obj->set_HP(20);
-    obj->set_max_HP(20);
-    obj->set_MP(10);
-    obj->set_max_MP(30);
-    obj->set_mobility(5);
-    obj->set_strength(6);
+    obj->load_caracteristics();
     persos.push_back(obj);
 
     Player *p1 = new Player(0);
@@ -161,7 +151,7 @@ void MainWindow::setCurrentScene(const SceneId id)
     ui->main_view->setScene(_current_scene);
 }
 
-void MainWindow::slot_begin_fight(Perso */*yours*/, Perso */*opponent*/)
+void MainWindow::slot_begin_fight(Perso * /*yours*/, Perso * /*opponent*/)
 {
     setCurrentScene(FIGHT_SCENE);
 }

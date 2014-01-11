@@ -36,7 +36,10 @@ SOURCES += main.cpp\
     scene/fightscene.cpp \
     scene/statsscene.cpp \
     scene/wggraphicsscene.cpp \
-    computemoves.cpp
+    computemoves.cpp \
+    core/equipment.cpp \
+    scene/handler/statsinputhandler.cpp \
+    scene/handler/inputhandler.cpp
 
 HEADERS  += mainwindow.h \
         constants/ChainConstants.hpp \
@@ -61,7 +64,10 @@ HEADERS  += mainwindow.h \
     scene/graphicdeadeffect.hpp \
     scene/fightscene.hpp \
     scene/statsscene.hpp \
-    scene/wggraphicsscene.hpp
+    scene/wggraphicsscene.hpp \
+    core/equipment.hpp \
+    scene/handler/statsinputhandler.hpp \
+    scene/handler/inputhandler.hpp
 
 FORMS    += mainwindow.ui
 

@@ -9,6 +9,8 @@ class Perso;
 class QGraphicsPixmapItem;
 class QGraphicsTextItem;
 
+class FightInputHandler;
+
 class CursorActionItem;
 
 enum FightActionEnum
@@ -46,15 +48,14 @@ private:
 
     void update_HP_and_MP();
 
+    void create_possible_actions();
+
 public:
     explicit FightScene(QObject *parent = 0);
     
     void do_attack();
 
 protected:
-    // Methods inherited from the scene
-    //void mouseMoveEvent(QGraphicsSceneMouseEvent *event);
-    //void mousePressEvent(QGraphicsSceneMouseEvent *event);
     void keyPressEvent(QKeyEvent *event);
 
 signals:

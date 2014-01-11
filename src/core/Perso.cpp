@@ -15,6 +15,7 @@ Perso::Perso():WGObject(NULL),_shield(), _weapon(){
     _name = "";
     _HP = 0.0;
     _MP = 0.0;
+    _xp = 0;
     _strength = 0.0;
     _power = 0.0;
     _def = 0.0;
@@ -24,6 +25,8 @@ Perso::Perso():WGObject(NULL),_shield(), _weapon(){
     _mob = 0;
     _states = std::vector<PState>();
     set_moved(false);
+
+    connect(this, SIGNAL(signal_perso_win_level(Perso*)), this, SLOT(slot_perso_win_level()));
 }
 
 Perso::Perso(Perso &p):WGObject(p.parent()){
@@ -36,7 +39,10 @@ Perso::Perso(Perso &p):WGObject(p.parent()){
     _mr = p.get_MR();
     _luck = p.get_luck();
     _states = p.get_states();
+    _xp = p.get_XP();
     set_moved(false);
+
+    connect(this, SIGNAL(signal_perso_win_level(Perso*)), this, SLOT(slot_perso_win_level()));
 }
 
 Perso::Perso(QObject* obj):WGObject(obj){
@@ -50,8 +56,11 @@ Perso::Perso(QObject* obj):WGObject(obj){
     _luck = 0.0;
     _lvl = 0;
     _mob = 0;
+    _xp = 0;
     _states = std::vector<PState>();
     set_moved(false);
+
+    connect(this, SIGNAL(signal_perso_win_level(Perso*)), this, SLOT(slot_perso_win_level()));
 }
 
 Perso::Perso(WGObject &obj):WGObject(&obj){
@@ -64,8 +73,11 @@ Perso::Perso(WGObject &obj):WGObject(&obj){
     _luck = 0.0;
     _lvl = 0;
     _mob = 0;
+    _xp = 0;
     _states = std::vector<PState>();
     set_moved(false);
+
+    connect(this, SIGNAL(signal_perso_win_level(Perso*)), this, SLOT(slot_perso_win_level()));
 }
 
 
@@ -88,7 +100,10 @@ Perso::Perso(std::string name, int perso_id,
     _lvl = lvl;
     _mob = mob;
     _states = state;
+    _xp = 0;
     set_moved(false);
+
+    connect(this, SIGNAL(signal_perso_win_level(Perso*)), this, SLOT(slot_perso_win_level()));
 }
 
 Perso::~Perso(){
@@ -245,8 +260,13 @@ Perso::get_max_XP(){
 }
 
 void
-Perso::set_XP(int val){
-    _xp = val;
+Perso::add_XP(int val){
+    _xp += val;
+    while(_xp >= XP_FOR_WINNING_LEVEL) { // Can't win 2 levels at the same time ?
+        _xp -= XP_FOR_WINNING_LEVEL;
+        inc_level();
+        emit signal_perso_win_level(this);
+    }
 }
 
 void
@@ -314,6 +334,15 @@ void
 Perso::slot_reset_has_moved(){
     set_moved(false);
 }
+
+void Perso::slot_perso_win_level() {
+    load_caracteristics();
+}
+
+void Perso::slot_kill_enemy(Perso *enemy) {
+    emit signal_equipment_won(&enemy->_dead_equipment);
+}
+
 int
 Perso::get_player_id() {
     return _player_id;
@@ -344,7 +373,12 @@ Perso::load_caracteristics(){
                     if (enemy_node.tagName() == "perso" && enemy_node.attribute("id").toStdString()==_name) {
                         QDomElement tag_child = enemy_node.firstChild().toElement();
                         while(!tag_child.isNull()) {
-                            if (tag_child.tagName() == "lvl") {
+                            if (tag_child.tagName() == "dead") {
+                                _dead_equipment.add_money(tag_child.attribute("gold").toInt());
+                                _dead_equipment.set_xp(tag_child.attribute("xp").toInt());
+                                // TODO _dead_equipment.add_item(new Weapon/Shield("tag_child.attribute("weapon/shield")"));
+                            }
+                            else if (tag_child.tagName() == "lvl") {
                                 if (tag_child.attribute("id").toInt() == _lvl) {
                                     set_HP(tag_child.attribute("HP").toInt());
                                     set_MP(tag_child.attribute("MP").toInt());

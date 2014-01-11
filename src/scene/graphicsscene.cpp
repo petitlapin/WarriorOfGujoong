@@ -113,7 +113,6 @@ void GraphicsScene::add_objects(const QList<Perso *> &objects) {
         connect(this, SIGNAL(signal_end_of_turn()), obj, SLOT(slot_reset_has_moved()));
         connect(obj, SIGNAL(signal_perso_is_dead(Perso*)), this, SLOT(slot_perso_is_dead(Perso *)));
 
-
         connect(_current_map, SIGNAL(signal_change_current_player(int)), graphicObject, SLOT(slot_set_current_player(int)));
 
         // You have to do it once to initialize data

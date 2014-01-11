@@ -34,6 +34,7 @@ public:
 FightScene::FightScene(QObject *parent) :
     WGGraphicsScene(parent)
 {
+
     _attacker_perso_icon = new QGraphicsPixmapItem();
     _opponent_perso_icon = new QGraphicsPixmapItem();
     _attacker_perso_icon->setPos(0, 0);
@@ -44,21 +45,7 @@ FightScene::FightScene(QObject *parent) :
     _cursor_icon = new CursorActionItem(QPixmap(Constants::IMAGES_DATA_PATH + "cursor.png"), ATTACK);
     addItem(_cursor_icon);
 
-
-    _attack_label = new QGraphicsTextItem(TEXT_ACTION_POSITIONS[ATTACK].label);
-    _magic_label = new QGraphicsTextItem(TEXT_ACTION_POSITIONS[MAGIC].label);
-    _run_label = new QGraphicsTextItem(TEXT_ACTION_POSITIONS[RUN].label);
-    _attack_label->setPos(TEXT_ACTION_POSITIONS[ATTACK].pos_x, TEXT_ACTION_POSITIONS[ATTACK].pos_y);
-    _magic_label->setPos(TEXT_ACTION_POSITIONS[MAGIC].pos_x, TEXT_ACTION_POSITIONS[MAGIC].pos_y);
-    _run_label->setPos(TEXT_ACTION_POSITIONS[RUN].pos_x, TEXT_ACTION_POSITIONS[RUN].pos_y);
-
-    _attack_label->setDefaultTextColor(Qt::blue);
-    _magic_label->setDefaultTextColor(Qt::blue);
-    _run_label->setDefaultTextColor(Qt::blue);
-
-    addItem(_attack_label);
-    addItem(_magic_label);
-    addItem(_run_label);
+    create_possible_actions();
 
 
     _attacker_HP_label = new QGraphicsTextItem();
@@ -103,6 +90,8 @@ void FightScene::begin_fight(Perso *yours, Perso *opponent)
 
 void FightScene::do_attack()
 {
+    connect(_opponent, SIGNAL(signal_perso_is_dead(Perso*)), _attacker, SLOT(slot_kill_enemy(Perso*)));
+
     int damage = _attacker->get_strength(); // TODO Do something with _opponent->get_shield()
     if(damage > _opponent->get_HP())
         damage = _opponent->get_HP();
@@ -111,8 +100,12 @@ void FightScene::do_attack()
 
     update_HP_and_MP();
 
+    // TODO Display text : either unresolved fight or _opponent is dead, you win *** xp and *** $$. If you win a level, display text (and stats increased ?)
+
     // Timer for the animation
     _end_action_timer.start(2000);
+
+    disconnect(_opponent, SIGNAL(signal_perso_is_dead(Perso*)), _attacker, SLOT(slot_kill_enemy(Perso*)));
 }
 
 void FightScene::update_HP_and_MP()
@@ -121,6 +114,24 @@ void FightScene::update_HP_and_MP()
     _opponent_HP_label->setPlainText(QString("HP : %1 / %2").arg(_opponent->get_HP()).arg(_opponent->get_max_HP()));
     _attacker_MP_label->setPlainText(QString("MP : %1 / %2").arg(_attacker->get_MP()).arg(_attacker->get_max_MP()));
     _opponent_MP_label->setPlainText(QString("MP : %1 / %2").arg(_opponent->get_MP()).arg(_opponent->get_max_MP()));
+}
+
+void FightScene::create_possible_actions()
+{
+    _attack_label = new QGraphicsTextItem(TEXT_ACTION_POSITIONS[ATTACK].label);
+    _magic_label = new QGraphicsTextItem(TEXT_ACTION_POSITIONS[MAGIC].label);
+    _run_label = new QGraphicsTextItem(TEXT_ACTION_POSITIONS[RUN].label);
+    _attack_label->setPos(TEXT_ACTION_POSITIONS[ATTACK].pos_x, TEXT_ACTION_POSITIONS[ATTACK].pos_y);
+    _magic_label->setPos(TEXT_ACTION_POSITIONS[MAGIC].pos_x, TEXT_ACTION_POSITIONS[MAGIC].pos_y);
+    _run_label->setPos(TEXT_ACTION_POSITIONS[RUN].pos_x, TEXT_ACTION_POSITIONS[RUN].pos_y);
+
+    _attack_label->setDefaultTextColor(Qt::blue);
+    _magic_label->setDefaultTextColor(Qt::blue);
+    _run_label->setDefaultTextColor(Qt::blue);
+
+    addItem(_attack_label);
+    addItem(_magic_label);
+    addItem(_run_label);
 }
 
 void FightScene::keyPressEvent(QKeyEvent *event)

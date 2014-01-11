@@ -7,6 +7,7 @@
 class QKeyEvent;
 class QGraphicsGridLayout;
 class Player;
+class StatsInputHandler;
 
 class StatsScene : public WGGraphicsScene
 {
@@ -18,11 +19,8 @@ private:
     QGraphicsGridLayout *createPlayerLayout(Player *player);
 
 public:
-    StatsScene(QObject *parent = 0);
+    StatsScene(StatsInputHandler *input_handler, QObject *parent = 0);
     void set_players(QList<Player *> &players);
-
-protected:
-    void keyPressEvent(QKeyEvent *event);
 
 public slots:
     void refresh_stats();
